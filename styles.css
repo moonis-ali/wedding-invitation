@@ -1,0 +1,424 @@
+/* ============================================================
+   Moonis & Samra — Digital Wedding Invitation
+   ============================================================ */
+
+:root{
+  --ivory:      #FBF7EE;
+  --ivory-deep: #F1E7CF;
+  --line:       #DCCBA0;
+  --ink:        #332A1F;
+  --ink-soft:   #85786A;
+  --gold:       #B8912E;
+  --gold-light: #E3C878;
+
+  --groom:      #1F5C4A;   /* deep emerald — Moonis */
+  --groom-deep: #123B2F;
+  --bride:      #8C2A4B;   /* deep rose — Samra */
+  --bride-deep: #601B33;
+
+  --serif: "Cormorant Garamond", "Iowan Old Style", Georgia, serif;
+  --caps:  "Cinzel", var(--serif);
+  --sans:  "Karla", "Helvetica Neue", Arial, sans-serif;
+  --arabic:"Amiri", "Traditional Arabic", serif;
+
+  --frame-w: 430px;
+  --frame-h: 860px;
+  --radius: 28px;
+}
+
+*{ box-sizing: border-box; }
+html, body{ margin: 0; padding: 0; height: 100%; }
+
+body{
+  background: #161c1a;
+  background-image: radial-gradient(circle at 25% 15%, #1f2a26 0%, #10140f 65%);
+  font-family: var(--sans);
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+.stage{ width: 100%; display: flex; justify-content: center; }
+
+.frame{
+  position: relative;
+  width: min(94vw, var(--frame-w));
+  height: min(92vh, var(--frame-h));
+  background: var(--ivory);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow:
+    0 30px 60px -20px rgba(0,0,0,0.6),
+    0 0 0 8px #0d1210,
+    0 0 0 9px #2c3a34;
+}
+
+@media (max-width: 480px){
+  body{ padding: 0; }
+  .frame{ width: 100vw; height: 100vh; height: 100dvh; border-radius: 0; box-shadow: none; }
+}
+
+/* ---------------------------------------------------------
+   Doors screen
+--------------------------------------------------------- */
+.doors-screen{
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  transition: visibility 0.9s ease;
+}
+.frame.opened .doors-screen{
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.door{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background: linear-gradient(180deg, #F7F1DE, var(--ivory-deep) 40%, #ECE0BC);
+  transition: transform 0.9s cubic-bezier(.65,0,.35,1) 0.15s;
+  box-shadow: inset 0 0 0 1px rgba(31,92,74,0.08);
+}
+.door-left{ left: 0; border-right: 2px solid var(--gold); }
+.door-right{ right: 0; border-left: 2px solid var(--gold); }
+
+.door-inlay{
+  position: absolute;
+  inset: 18px;
+  border: 1px solid var(--gold);
+  opacity: 0.6;
+}
+.door-left .door-inlay{ border-right: none; }
+.door-right .door-inlay{ border-left: none; }
+
+.frame.opened .door-left{ transform: translateX(-100%); }
+.frame.opened .door-right{ transform: translateX(100%); }
+
+.seal-btn{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 7;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+.frame.opened .seal-btn{
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.6);
+  pointer-events: none;
+}
+
+.seal-svg{
+  width: 116px;
+  height: 116px;
+  filter: drop-shadow(0 6px 10px rgba(18,59,47,0.35));
+}
+.seal-outer{ fill: var(--groom); }
+.seal-inner{ fill: none; stroke: var(--gold-light); stroke-width: 1.4; }
+.seal-bismillah{
+  font-family: var(--arabic);
+  font-size: 15px;
+  fill: var(--gold-light);
+}
+
+.seal-initials{
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  display: flex;
+  gap: 8px;
+}
+.init-groom{ color: var(--groom-deep); }
+.init-bride{ color: var(--bride-deep); }
+.seal-amp{ color: var(--gold); font-size: 16px; }
+
+.tap-hint{
+  font-family: var(--sans);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  animation: pulseHint 2.4s ease-in-out infinite;
+}
+@keyframes pulseHint{ 0%,100%{ opacity: 0.5; } 50%{ opacity: 1; } }
+
+.seal-btn:focus-visible{
+  outline: 2px solid var(--gold);
+  outline-offset: 8px;
+  border-radius: 50%;
+}
+
+/* ---------------------------------------------------------
+   Invitation
+--------------------------------------------------------- */
+.invite{
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  opacity: 0;
+  transition: opacity 0.7s ease 0.75s;
+}
+.frame.opened .invite{ opacity: 1; }
+.invite::-webkit-scrollbar{ width: 0; }
+
+.panel{
+  padding: 52px 30px 38px;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+}
+.foot-panel{ padding: 44px 30px 52px; text-align: center; }
+
+.section-label{
+  margin: 0 0 22px;
+  font-family: var(--caps);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--groom);
+}
+
+/* Hero */
+.hero-panel{ background: radial-gradient(ellipse at 50% 0%, #FDF9EC 0%, var(--ivory) 60%); }
+
+.shloka{
+  margin: 0 0 6px;
+  font-family: var(--arabic);
+  font-size: 22px;
+  line-height: 1.6;
+  color: var(--groom-deep);
+}
+.shloka-translit{
+  margin: 0 0 20px;
+  font-size: 11.5px;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+.star-garland{ width: 100%; max-width: 280px; height: auto; margin: 0 auto 18px; display: block; }
+.garland-line{ fill: none; stroke: var(--gold); stroke-width: 1; opacity: 0.8; }
+.garland-star path{ fill: var(--gold); opacity: 0.9; }
+
+.eyebrow{ margin: 0 0 16px; font-size: 12.5px; letter-spacing: 0.05em; color: var(--ink-soft); }
+
+.hero-names{
+  margin: 4px 0 20px;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 46px;
+  line-height: 1.15;
+}
+.hero-names span{ display: block; }
+.name-groom{ color: var(--groom-deep); }
+.name-bride{ color: var(--bride-deep); }
+.hero-names .amp{
+  font-style: italic;
+  font-size: 20px;
+  color: var(--gold);
+  margin: 4px 0;
+}
+
+.hero-line{ margin: 0 0 26px; font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+
+.hero-date-card{
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 26px;
+  border: 1px solid var(--gold);
+}
+.hero-date-day{ font-family: var(--serif); font-size: 40px; color: var(--ink); line-height: 1; }
+.hero-date-rest{ display: flex; flex-direction: column; align-items: flex-start; text-align: left; font-size: 12.5px; color: var(--ink-soft); }
+.hero-date-rest span:first-child{ font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--groom); }
+
+/* Slide to reveal */
+.reveal-panel{ background: var(--ivory-deep); }
+
+.reveal-frame{
+  position: relative;
+  height: 200px;
+  max-width: 320px;
+  margin: 0 auto 18px;
+  border: 1px solid var(--gold);
+  overflow: hidden;
+}
+
+.reveal-photo{ position: absolute; inset: 0; width: 100%; height: 100%; }
+.reveal-photo img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.reveal-photo-a{ clip-path: inset(0 var(--reveal, 50%) 0 0); }
+.reveal-photo-b{ clip-path: inset(0 0 0 calc(100% - var(--reveal, 50%))); }
+
+.reveal-date{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(251,247,238,0.92);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+.reveal-date.shown{ opacity: 1; }
+.reveal-date span{ font-family: var(--serif); font-size: 40px; color: var(--groom-deep); line-height: 1; }
+.reveal-date em{ font-style: italic; font-size: 16px; color: var(--groom); margin-top: 2px; }
+
+.reveal-slider{
+  width: 100%;
+  max-width: 320px;
+  accent-color: var(--groom);
+  height: 24px;
+  cursor: pointer;
+}
+
+.reveal-hint{ margin: 10px 0 0; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-soft); }
+
+/* Countdown */
+.countdown-panel{ background: var(--ivory); }
+.countdown-sub{ margin: -10px 0 22px; font-size: 12px; color: var(--ink-soft); }
+
+.countdown{ display: flex; justify-content: center; gap: 10px; }
+.count-unit{
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  width: 66px; height: 66px;
+  border: 1px solid var(--gold);
+  background: var(--ivory-deep);
+}
+.count-num{ font-family: var(--serif); font-size: 21px; color: var(--groom-deep); line-height: 1; }
+.count-label{ margin-top: 4px; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-soft); }
+
+/* Meet the couple */
+.couple-panel{ background: var(--ivory-deep); }
+.couple-grid{ display: flex; justify-content: center; gap: 22px; flex-wrap: wrap; }
+.couple-card{ width: 140px; }
+.couple-photo{
+  width: 110px; height: 110px; margin: 0 auto 12px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--gold);
+}
+.couple-card-groom .couple-photo{ border-color: var(--groom); }
+.couple-card-bride .couple-photo{ border-color: var(--bride); }
+.couple-photo img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+.couple-role{ margin: 0 0 2px; font-family: var(--caps); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+.couple-card-groom .couple-role{ color: var(--groom); }
+.couple-card-bride .couple-role{ color: var(--bride); }
+.couple-name{ margin: 0 0 8px; font-family: var(--serif); font-style: italic; font-size: 20px; }
+.couple-card-groom .couple-name{ color: var(--groom-deep); }
+.couple-card-bride .couple-name{ color: var(--bride-deep); }
+.couple-parents{ margin: 0; font-size: 11.5px; line-height: 1.6; color: var(--ink-soft); }
+.couple-parents strong{ color: var(--ink); font-weight: 500; }
+
+/* Together forever */
+.together-panel{ background: var(--ivory); }
+.together-photo{
+  width: 100%; max-width: 300px; height: 200px; margin: 0 auto 18px;
+  border: 1px solid var(--gold); overflow: hidden;
+}
+.together-photo img{ width: 100%; height: 100%; object-fit: cover; display: block; }
+.together-quote{ margin: 0; font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--groom); }
+
+/* Event timeline */
+.timeline-panel{ background: var(--ivory-deep); text-align: left; }
+.timeline-panel .section-label{ text-align: center; }
+
+.timeline{ list-style: none; margin: 0 auto; padding: 0; max-width: 300px; }
+.timeline-item{
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 0 13px 22px;
+  border-left: 1px solid var(--gold);
+}
+.timeline-item:last-child{ border-left: 1px solid transparent; }
+.timeline-dot{
+  position: absolute;
+  left: -5px;
+  top: 18px;
+  width: 9px; height: 9px;
+  border-radius: 50%;
+  background: var(--groom);
+  box-shadow: 0 0 0 3px var(--ivory-deep);
+}
+.timeline-name{ font-family: var(--serif); font-size: 17px; color: var(--ink); }
+.timeline-when{ font-size: 11.5px; color: var(--ink-soft); white-space: nowrap; }
+
+/* Venues */
+.venues-panel{ background: var(--ivory); }
+.venues-sub{ margin: -10px 0 24px; font-size: 12.5px; color: var(--ink-soft); }
+
+.venue-card{
+  border: 1px solid var(--gold);
+  padding: 20px;
+  text-align: left;
+  margin-bottom: 16px;
+}
+.venue-card:last-child{ margin-bottom: 0; }
+.venue-tag{
+  margin: 0 0 6px; font-family: var(--caps); font-size: 10.5px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--groom);
+}
+.venue-name{ margin: 0 0 3px; font-family: var(--serif); font-size: 20px; color: var(--groom-deep); }
+.venue-address{ margin: 0 0 3px; font-size: 13px; color: var(--ink-soft); }
+.venue-link{ font-size: 12.5px; color: var(--groom); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+/* RSVP */
+.rsvp-panel{ background: var(--ivory-deep); }
+.rsvp-line{ margin: 0 0 24px; font-size: 14px; color: var(--ink-soft); }
+
+.rsvp-buttons{ display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.rsvp-btn{
+  width: 100%;
+  max-width: 280px;
+  padding: 14px 20px;
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.rsvp-yes{ background: var(--groom); color: var(--ivory); border: 1px solid var(--groom); }
+.rsvp-yes:hover{ background: var(--groom-deep); transform: translateY(-1px); }
+.rsvp-no{ background: transparent; color: var(--ink-soft); border: 1px solid var(--line); }
+.rsvp-no:hover{ border-color: var(--ink-soft); color: var(--ink); }
+
+.rsvp-thanks{
+  margin: 18px 0 0;
+  min-height: 18px;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--groom);
+}
+
+/* Footer */
+.foot-bismillah{ margin: 0 0 10px; font-family: var(--arabic); font-size: 17px; color: var(--groom); }
+.foot-names{ margin: 0 0 6px; font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--groom-deep); }
+.foot-line{ margin: 0; font-size: 11.5px; letter-spacing: 0.04em; color: var(--ink-soft); }
